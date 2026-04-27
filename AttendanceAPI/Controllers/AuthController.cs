@@ -37,5 +37,25 @@ namespace AttendanceAPI.Controllers
                 role = user.Role
             });
         }
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] User user)
+        {
+            try
+            {
+                var existingUser = _context.Users.FirstOrDefault(x => x.Email == user.Email);
+
+                if (existingUser != null)
+                    return BadRequest(new { message = "User already exists ❗" });
+
+                _context.Users.Add(user);
+                _context.SaveChanges();
+
+                return Ok(new { message = "User registered successfully ✅" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }
