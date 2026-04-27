@@ -25,7 +25,7 @@ namespace AttendanceAPI.Controllers
         {
             try
             {
-                var today = DateTime.Today;
+                var today = DateTime.UtcNow.Date;
 
                 var existing = _context.Attendance
                     .FirstOrDefault(x => x.UserId == userId && x.Date.Date == today);
@@ -33,7 +33,7 @@ namespace AttendanceAPI.Controllers
                 if (existing != null)
                     return BadRequest(new { message = "Already checked in today ❗" });
 
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
 
                 var attendance = new Attendance
                 {
@@ -62,7 +62,7 @@ namespace AttendanceAPI.Controllers
         {
             try
             {
-                var today = DateTime.Today;
+                var today = DateTime.UtcNow.Date;
 
                 var attendance = _context.Attendance
                     .FirstOrDefault(x => x.UserId == userId && x.Date.Date == today);
@@ -73,7 +73,7 @@ namespace AttendanceAPI.Controllers
                 if (attendance.CheckOutTime != null)
                     return BadRequest(new { message = "Already checked out ❗" });
 
-                attendance.CheckOutTime = DateTime.Now;
+                attendance.CheckOutTime = DateTime.UtcNow;
 
                 _context.SaveChanges();
 
