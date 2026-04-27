@@ -5,12 +5,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+// ✅ SQL Server → PostgreSQL (Neon)
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// ✅ CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -22,10 +24,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// ❌ REMOVE this पूरी if condition
-// if (app.Environment.IsDevelopment())
-
-// ✅ ADD THIS (ALWAYS ENABLE SWAGGER)
+// ✅ Swagger ALWAYS ON (Railway ke liye important)
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -40,5 +39,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// ✅ Railway PORT fix
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Run($"http://0.0.0.0:{port}");
